@@ -1,69 +1,91 @@
 /// variables
-    currentWord = "";
-    wins = 0;
-    loss = 0;
-    guesses = [];
-    var startBtn = document.querySelector("#start-game");
-    var timer = document.querySelector("#timer");
-    var time = 3;
-    
- function randomWord(){
-        var words = ["cat", "dog", "potato"];
-        var i = Math.floor(Math.random() * words.length);
-        currentWord = words[i];
-        return currentWord
-    }
+currentWord = "";
+wins = 0;
+losses = 0;
+guesses = [];
+var startBtn = document.querySelector("#start-game");
+var timer = document.querySelector("#timer");
+var time = 10;
+var wordBox = document.querySelector("#word-box");
+var winsContainer = document.querySelector("#wins");
+var lossesContainer = document.querySelector("#losses")
 
- function keyDown(event){
-    var keyPress = event.key;
-    document.querySelector("#key").textContent = keyPress;
-    document.querySelector("#display").textContent = displayWord
+function storeStats(){
+    localStorage.setItem("wins", wins);
+    localStorage.setItem("losses", losses);
 }
 
+function randomWord() {
+    var words = ["cat", "dog", "potato"];
+    var i = Math.floor(Math.random() * words.length);
+    currentWord = words[i];
+    return currentWord
+}
 
-// click event listener for Begin button that will trigger a function to
-startBtn.addEventListener("click", function(){
-    // function to start timer
-    var countdown = setInterval(counter, 1000);
-        function counter(){
-             time--;
-             if (time == 0)  {
-                clearInterval(countdown);
-                timer.textContent = 0 + "s";
-                return;
-            } else {
-             timer.textContent = time + "s";
-            }}
-    // select random word (function)
-        //once a random word is selected it assigns to the global variable of currentWord
-        // currentWord = randomWord 
-        randomWord();
-        console.log(currentWord);
-    // displayWord (only chars that have been inputted user or _)
-        // create a mew empty string var displayStr = "";
-        // create a variable called won = true
-        // iterate through the currentWord (cat)
-            // while it examines each char (c -a -t)
-                //check to see if that character exist in the guesses array
-                    //nested for loop or use includes method
-                        // if it does concat that value to the displayStr
-                        // else - ut does not 
-                        // concat  "_"
-                            // toggle won to false
-            // return dislayStr
-                // target the 'wordbox"
-                    // empty current content
-                    //update text content to be displayStr
-            // how do we know that we won? 
-            //if won is true 
-                // execute winGame Function
-    })
+document.addEventListener("keydown", (e) => {
+    var key = e.key;
+    if (guesses.includes(key)) {
+        return
+    } else {
+        guesses.push(key);
+        displayWord();
+    }
+});
 
-// the winGame function 
-    //clear iterval
-    // increment the win
-    // display win status
-// event listener - on entire document for a keydown
-    // create variable assigned to value of key pressed
-    // guesses.push(variable for key pressed)
-    // displayWord
+function displayWord() {
+    var displayStr = " ";
+    var won = true;
+    for (var i = 0; i < currentWord.length; i++) {
+        if (guesses.includes(currentWord[i])) {
+            displayStr += currentWord[i];
+        } else {
+            won = false;
+            displayStr += "_";
+        }
+    }
+    wordBox.textContent = displayStr;
+    if (won) { winGame() };
+}
+
+var countdown;
+startBtn.addEventListener("click", function() {
+    storeStats();
+    wordBox.textContent = "";
+    guesses = [];
+    time = 10;
+    countdown = setInterval(counter, 1000);
+    randomWord();
+    console.log(currentWord);
+    displayWord();
+    return countdown
+})
+
+function stopCountdown() {
+    clearInterval(countdown);
+}
+
+function counter() {
+    time--;
+    if (time === 0) {
+        stopCountdown();
+        timer.textContent = 0 + "s";
+        losses++;
+        winsContainer.textContent = wins;
+        lossesContainer.textContent = losses;
+        return time
+
+    } else {
+        timer.textContent = time + "s";
+
+    }
+}
+
+function winGame() {
+    wins++;
+    clearInterval(countdown);
+    time = 0;
+    timer.textContent = time + "s";
+    winsContainer.textContent = wins;
+    lossesContainer.textContent = losses;
+}
+
