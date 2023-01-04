@@ -5,35 +5,39 @@
     guesses = [];
     var startBtn = document.querySelector("#start-game");
     var timer = document.querySelector("#timer");
-    var time = 60;
+    var time = 3;
     
-
-    function countDown(){
-        time--;
-        timer.textContent = time + "s";
-        if(time === 0){
-            clearInterval(countDown);
-        }
-    }
-    
-    function randomWord(){
+ function randomWord(){
         var words = ["cat", "dog", "potato"];
         var i = Math.floor(Math.random() * words.length);
         currentWord = words[i];
         return currentWord
     }
 
+ function keyDown(event){
+    var keyPress = event.key;
+    document.querySelector("#key").textContent = keyPress;
+    document.querySelector("#display").textContent = displayWord
+}
+
+
 // click event listener for Begin button that will trigger a function to
 startBtn.addEventListener("click", function(){
     // function to start timer
-    setInterval(countDown, 1000);
-
+    var countdown = setInterval(counter, 1000);
+        function counter(){
+             time--;
+             if (time == 0)  {
+                clearInterval(countdown);
+                timer.textContent = 0 + "s";
+                return;
+            } else {
+             timer.textContent = time + "s";
+            }}
     // select random word (function)
         //once a random word is selected it assigns to the global variable of currentWord
         // currentWord = randomWord 
-        
         randomWord();
-
         console.log(currentWord);
     // displayWord (only chars that have been inputted user or _)
         // create a mew empty string var displayStr = "";
@@ -53,7 +57,7 @@ startBtn.addEventListener("click", function(){
             // how do we know that we won? 
             //if won is true 
                 // execute winGame Function
-})
+    })
 
 // the winGame function 
     //clear iterval
