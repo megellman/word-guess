@@ -13,15 +13,6 @@
         currentWord = words[i];
         return currentWord
     }
-function displayWord(){
-
-    for (var i = 0; i < currentWord.length; i++){
-
-    }
-
-}
-
-
 
  function keyDown(event){
     var keyPress = event.key;
